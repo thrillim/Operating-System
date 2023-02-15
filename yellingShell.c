@@ -6,11 +6,9 @@
 
 #define MAX_LINE 80 /* The maximum length command */
 
-void getCommand(char *args[]) {
-    char command[MAX_LINE];
+void getCommand(char command[], char *args[]) {
     int length;
     int i;
-    int isWaitNull;
     // Read the command
     fgets(command, MAX_LINE, stdin);
     length = strlen(command);
@@ -24,7 +22,6 @@ void getCommand(char *args[]) {
     // Split the command into arguments
     i = 0;
     args[i] = strtok(command, " ");
-    isWaitNull = 0;
     while (args[i] != NULL) {
         i++;
         args[i] = strtok(NULL, " ");
@@ -35,7 +32,7 @@ int isWaitNull (char *args[]) {
     int i = 0;
     while (args[i] != NULL) {
         if (strcmp(args[i], "&") == 0) {
-            args[i] = NULL;
+            args[i] = "\0";
             return 1;
         }
         i++;
@@ -43,8 +40,8 @@ int isWaitNull (char *args[]) {
     return 0;
 }
 
-int main(void)
-{
+int main(void) {
+    char *command[MAX_LINE]; /* whole command line */
     char *args[MAX_LINE/2 + 1]; /* command line arguments */
     int should_run = 1; /* flag to determine when to exit program */
     pid_t pid;
@@ -56,16 +53,8 @@ int main(void)
         * (1) fork a child process using fork() 
         * (2) the child process will invoke execvp()
         * (3) if command included &, parent will invoke wait() */
-        //fork a child process using fork()
 
-        getCommand(args);
-
-        //// Print args to check
-        //int i = 0;
-        //while (args[i] != NULL) {
-        //    printf("%d %s \n", i + 1, args[i]);
-        //    i++;
-        //}
+        getCommand(command, args);
 
         if (strcmp(args[0], "exit") == 0) {
             should_run = 0;
@@ -75,15 +64,17 @@ int main(void)
                 printf("Fork Failed\n");
                 return 1;
                 //exit (1);
-            }
-            else if (pid == 0) {
+            } else if (pid == 0) {
                 //child process will invoke execvp()
-                if (execvp(args[0], args) == -1)  //a non valid command
-                {
+                if (execvp(args[0], args) == -1) { //a non valid command
+                    int k = 0;
+                    while (args[k] != NULL) {
+                        printf("%d %s \n", k + 1, args[k]);
+                        k++;
+                    }
                     printf("%s :  Invalid Command (Type 'exit' to exit)\n", args[0]);
                 }
-            }
-            else {
+            } else {
                 //parent will invoke wait() if command include &
                 if (isWaitNull(args) == 0) {
                     wait(NULL);
