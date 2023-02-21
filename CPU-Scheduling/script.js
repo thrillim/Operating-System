@@ -12,10 +12,10 @@ class Process {
 
 // Define the processes in order of arrival time
 const processes = [
-    new Process("P1", 0, 8, 4),
-    new Process("P2", 1, 4, 2),
-    new Process("P3", 2, 9, 3),
-    new Process("P4", 3, 5, 1)
+    new Process("P1", 0, 10, 3),
+    new Process("P2", 0, 1, 1),
+    new Process("P3", 9, 2, 4),
+    new Process("P4", 0, 1, 5)
 ];
 
 const unit = 50; // width of a cell
@@ -29,7 +29,7 @@ const algorithms = {
     RR: "Round Robin"
 }
 
-const selectedAlg = "SJF_P";
+const selectedAlg = "PRI_P";
 const heading = document.getElementById("algorithm");
 
 let totalWaitingTime = 0;
@@ -256,6 +256,81 @@ if (selectedAlg === "SJF_P") {
 
 if (selectedAlg === "PRI_P") {
     heading.innerHTML = algorithms.PRI_P;
+        // Calculate for Gantt chart and timeline by SJF non-preemptive algorithm
+        let cloneProcesses = [...processes];
+        let currentProcesses = [];
+        let index = 0;
+    
+        // Array for checking if the process has been appeared in the timeline
+        let checked = [];
+        for (let i = 0; i < processes.length; i++) {
+            checked.push({ name: processes[i].name, checked: false });
+        }
+        
+        do {
+            // Filter the processes that have not completed yet
+            cloneProcesses = cloneProcesses.filter((p) => p.burstTime > 0);
+            // Get the current process
+            for (let i = 0; i < cloneProcesses.length; i++) {
+                const process = cloneProcesses[i];
+                if (process.arrivalTime <= currentTime) {
+                    currentProcesses.push(process);
+                    cloneProcesses.splice(i, 1);
+                    i--;
+                }
+            }
+            //console.log(...processes);
+            if (currentProcesses.length == 0) {currentTime++; continue;}
+            // Sort the current processes by priority
+            // Assume that the larger the number, the higher the priority
+            //currentProcesses.sort((a, b) => b.priority - a.priority);
+            // Assume that the smaller the number, the higher the priority
+            currentProcesses.sort((a, b) => a.priority - b.priority);
+    
+            const process = currentProcesses[0];
+            currentProcesses.splice(0, 1);
+            // Find the index of the process in the original array
+            index = processes.findIndex((p) => p.name === process.name);
+            console.log(...timeline);
+            // If the process is the first process in the timeline array
+            if (timeline.length === 0) {
+                timeline.push({ process: processes[index], startTime: currentTime, endTime: currentTime + 1 });
+            } else {
+                // If the process is not the first process in the timeline array
+                // and not the same as the last process in the timeline array
+                if (timeline[timeline.length - 1].process.name !== process.name) {
+                    timeline.push({ process: processes[index], startTime: currentTime, endTime: currentTime + 1 });
+                } else {
+                    // If the process is the same as the last process in the timeline array => extend the end time
+                    timeline[timeline.length - 1].endTime += 1;
+                }
+            }
+            cloneProcesses.unshift({ name: process.name, arrivalTime: process.arrivalTime, burstTime: process.burstTime - 1, priority: process.priority });
+    
+            currentTime++;
+    
+            // Calculate waiting time
+            processes[index].waitingTime = currentTime - processes[index].arrivalTime - processes[index].burstTime;
+    
+            // Calculate turn around time
+            processes[index].turnAroundTime = currentTime - processes[index].arrivalTime;
+    
+            // Calculate response time
+            if (checked[index].checked === false) {
+                processes[index].responseTime = currentTime - 1 - processes[index].arrivalTime;
+                checked[index].checked = true;
+            }
+    
+        }
+        while (cloneProcesses.length > 0);
+        currentTime--;
+    
+        // Calculate the total waiting time
+        totalWaitingTime = processes.reduce((total, process) => total + process.waitingTime, 0);
+        // Calculate the total turn around time
+        totalTurnAroundTime = processes.reduce((total, process) => total + process.turnAroundTime, 0);
+        // Calculate the total response time
+        totalResponseTime = processes.reduce((total, process) => total + process.responseTime, 0);
 }
 
 if (selectedAlg === "RR") {
@@ -315,7 +390,7 @@ for (let i = 0; i < timeline.length; i++) {
     const width = (endTime - startTime) * unit;
     const left = startTime * unit;
     const index = processes.findIndex((p) => p.name === process.name);
-    const color = `hsl(${index * unit}, 90%, 65%)`;
+    const color = `hsl(${index * unit * 1.28}, 90%, 65%)`;
     const div = document.createElement("div");
 
     gainCell += endTime - startTime;
