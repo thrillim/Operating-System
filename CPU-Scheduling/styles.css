@@ -1,0 +1,51 @@
+body {
+    margin: 10px;
+    font-size: 16px;
+}
+  
+#gantt-chart {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 60px;
+}
+
+.process {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.process:before {
+    content: attr(data-name);
+    position: relative;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+#timeline {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.milestone {
+    text-align: right;
+    font-size: 12px;
+}
+  
+table, th, td {
+    border: 1px solid;
+    border-collapse: collapse;
+    text-align: center;
+    padding: 4px;
+}
+
+#data {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}

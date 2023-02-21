@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CPU Scheduling</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <h1>FCFS</h1>
+        <div id="data">
+            <table id="given-processes">
+                <tr>
+                    <th>Process</th>
+                    <th>Arrival Time</th>
+                    <th>Burst Time</th>
+                    <th>Priority</th>
+                    <th>Waiting Time</th>
+                    <th>Turnaround Time</th>
+                    <th>Respond Time</th>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td>Throughput</td>
+                    <td><span id="throughput-value"></span> (process/time unit)</td>
+                </tr>
+                <tr>
+                    <td>Average Waiting Time</td>
+                    <td><span id="avg-waiting-time-value"></span> (time unit)</li></td>
+                </tr>
+                <tr>
+                    <td>Average Turnaround Time</td>
+                    <td><span id="avg-turnaround-time-value"></span> (time unit)</td>
+                </tr>    
+                <tr>
+                    <td>Average Response Time</td>
+                    <td><span id="avg-response-time-value"></span> (time unit)</td>
+                </tr>
+            </table>
+        </div>
+        <div id="charts">
+            <div id="gantt-chart"></div>
+            <div id="timeline">
+            <div class="milestone">0</div>
+            </div>
+        </div>
+        
+
+        <script src="script.js"></script>
+    </body>
+</html>
