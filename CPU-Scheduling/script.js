@@ -18,37 +18,33 @@ const processes = [
     new Process("P4", 15, 4, 4)
 ];
 
+const unit = 50; // width of a cell
+
 const algorithms = {
     FCFS: "FCFS - First Come First Serve",
     SJF_N: "SJF - Shortest Job First (Non-preemptive)",
     SJF_P: "SJF - Shortest Job First (Preemptive)",
-    PRI_N: "PRIORITY - Priority (Non-preemptive)",
-    PRI_P: "PRIORITY - Priority (Preemptive)",
+    PRI_N: "Priority (Non-preemptive)",
+    PRI_P: "Priority (Preemptive)",
     RR: "Round Robin"
 }
 
 const selectedAlg = "FCFS";
+const heading = document.getElementById("algorithm");
 
 let totalWaitingTime = 0;
 let totalTurnAroundTime = 0;
 let totalResponseTime = 0;
 let throughput = 0;
 
-const unit = 50; // width of a cell
-
-// Calculate the start and end times for each process
+// Calculate the start and end times for each process 
 let currentTime = 0;
-//const timeline = [{process: processes[0], startTime: 1, endTime: 2},
-//                  {process: processes[1], startTime: 3, endTime: 4},
-//                  {process: processes[1], startTime: 5, endTime: 8},
-//                  {process: processes[1], startTime: 8, endTime: 9},
-//                  {process: processes[1], startTime: 10, endTime: 18}];
 const timeline = [];
 
 if (selectedAlg === "FCFS") {
-    const heading = document.getElementById("algorithm");
     heading.innerHTML = algorithms.FCFS;
 
+    // Calculate for Gantt chart and timeline
     for (let i = 0; i < processes.length; i++) {
         const process = processes[i];
         const startTime = currentTime >= process.arrivalTime ? currentTime : process.arrivalTime;
@@ -104,33 +100,56 @@ if (selectedAlg === "FCFS") {
         div.dataset.name = process.name;
         ganttChart.appendChild(div);
     }
-
-    console.log(timeline);
-
-    // Calculate throughput
-    throughput = (processes.length / currentTime).toFixed(2);
-    const throughputElement = document.getElementById("throughput-value");
-    throughputElement.innerHTML = throughput;
-
-    const averageWaitingTime = document.getElementById("avg-waiting-time-value");
-    averageWaitingTime.innerHTML = (totalWaitingTime / processes.length).toFixed(2);
-
-    const averageTurnAroundTime = document.getElementById("avg-turnaround-time-value");
-    averageTurnAroundTime.innerHTML = (totalTurnAroundTime / processes.length).toFixed(2);
-
-    const averageResponseTime = document.getElementById("avg-response-time-value");
-    averageResponseTime.innerHTML = (totalResponseTime / processes.length).toFixed(2);
-
-    // Print the processes
-    const processList = document.getElementById("given-processes");
-    processList.innerHTML += processes.map(
-        (process) => `<tr>
-        <td>${process.name}</td>
-        <td>${process.arrivalTime}</td>
-        <td>${process.burstTime}</td>
-        <td>${process.priority}</td>
-        <td>${process.waitingTime}</td>
-        <td>${process.turnAroundTime}</td>
-        <td>${process.responseTime}</td>
-        </tr>`).join("\n");
 }
+
+if (selectedAlg === "SJF_N") {
+    heading.innerHTML = algorithms.SJF_N;
+}
+
+if (selectedAlg === "PRI_N") {
+    heading.innerHTML = algorithms.PRI_N;
+}
+
+if (selectedAlg === "SJF_P") {
+    heading.innerHTML = algorithms.SJF_P;
+}
+
+if (selectedAlg === "PRI_P") {
+    heading.innerHTML = algorithms.PRI_P;
+}
+
+if (selectedAlg === "RR") {
+    heading.innerHTML = algorithms.RR;
+}
+
+console.log(timeline);
+
+// Print the processes
+const processList = document.getElementById("given-processes");
+processList.innerHTML += processes.map(
+    (process) => `<tr>
+    <td>${process.name}</td>
+    <td>${process.arrivalTime}</td>
+    <td>${process.burstTime}</td>
+    <td>${process.priority}</td>
+    <td>${process.waitingTime}</td>
+    <td>${process.turnAroundTime}</td>
+    <td>${process.responseTime}</td>
+    </tr>`).join("\n");
+
+// Calculate and print throughput
+throughput = (processes.length / currentTime).toFixed(2);
+const throughputElement = document.getElementById("throughput-value");
+throughputElement.innerHTML = throughput;
+
+// Calculate and print average waiting time
+const averageWaitingTime = document.getElementById("avg-waiting-time-value");
+averageWaitingTime.innerHTML = (totalWaitingTime / processes.length).toFixed(2);
+
+// Calculate and print average turnaround time
+const averageTurnAroundTime = document.getElementById("avg-turnaround-time-value");
+averageTurnAroundTime.innerHTML = (totalTurnAroundTime / processes.length).toFixed(2);
+
+// Calculate and print average response time
+const averageResponseTime = document.getElementById("avg-response-time-value");
+averageResponseTime.innerHTML = (totalResponseTime / processes.length).toFixed(2);
