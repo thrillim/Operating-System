@@ -12,10 +12,10 @@ class Process {
 
 // Define the processes in order of arrival time
 const processes = [
-    new Process("P1", 0, 4, 1),
+    new Process("P1", 0, 4, 4),
     new Process("P2", 0, 1, 2),
     new Process("P3", 1, 2, 3),
-    new Process("P4", 2, 1, 4)
+    new Process("P4", 2, 1, 1)
 ];
 
 const unit = 50; // width of a cell
@@ -29,7 +29,7 @@ const algorithms = {
     RR: "Round Robin"
 }
 
-const selectedAlg = "SJF_N";
+const selectedAlg = "PRI_N";
 const heading = document.getElementById("algorithm");
 
 let totalWaitingTime = 0;
@@ -127,6 +127,55 @@ if (selectedAlg === "SJF_N") {
 
 if (selectedAlg === "PRI_N") {
     heading.innerHTML = algorithms.PRI_N;
+    // Calculate for Gantt chart and timeline by Priority non-preemptive algorithm
+    let cloneProcesses = [...processes];
+    let currentProcesses = [];
+    let index = 0;
+    let countdown = processes.length;
+
+    while (countdown > 0) {
+        // Get the current process
+        for (let i = 0; i < cloneProcesses.length; i++) {
+            const process = cloneProcesses[i];
+            if (process.arrivalTime <= currentTime) {
+                currentProcesses.push(process);
+                cloneProcesses.splice(i, 1);
+                i--;
+            }
+        }
+
+        if (currentProcesses.length === 0) {currentTime = cloneProcesses[0].arrivalTime; continue;}
+        // Sort the current processes by priority
+        // Assume that the larger the number, the higher the priority
+        //currentProcesses.sort((a, b) => b.priority - a.priority);
+        // Assume that the smaller the number, the higher the priority
+        currentProcesses.sort((a, b) => a.priority - b.priority);
+        const process = currentProcesses[0];
+        currentProcesses.splice(0, 1);
+        countdown--;
+        // Calculate the start and end times
+        // Start time is the current time
+        const endTime = currentTime + process.burstTime;
+
+        // Find the index of the process in the original array
+        index = processes.findIndex((p) => p.name === process.name);
+
+        timeline.push({ process: processes[index], startTime: currentTime, endTime: endTime });
+
+        // Calculate waiting time
+        processes[index].waitingTime = currentTime - processes[index].arrivalTime;
+        totalWaitingTime += processes[index].waitingTime;
+
+        // Calculate turn around time
+        processes[index].turnAroundTime = endTime - processes[index].arrivalTime;
+        totalTurnAroundTime += processes[index].turnAroundTime;
+        
+        // Calculate response time
+        processes[index].responseTime = currentTime - processes[index].arrivalTime;
+        totalResponseTime += processes[index].responseTime;
+
+        currentTime = endTime;
+    }
 }
 
 if (selectedAlg === "SJF_P") {
