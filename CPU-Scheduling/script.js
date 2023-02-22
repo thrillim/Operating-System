@@ -12,13 +12,17 @@ class Process {
 
 // Define the processes in order of arrival time
 const processes = [
-    new Process("P1", 0, 10, 3),
-    new Process("P2", 0, 1, 1),
-    new Process("P3", 9, 2, 4),
-    new Process("P4", 0, 1, 5)
+    new Process("P1", 0, 4, 0),
+    new Process("P2", 0, 5, 0),
+    new Process("P3", 0, 8, 0),
+    new Process("P4", 1, 7, 0),
+    new Process("P5", 0, 3, 0)
 ];
 
-const unit = 50; // width of a cell
+const selectedAlg = "RR";
+const heading = document.getElementById("algorithm");
+
+const unit = 30; // width of a cell
 
 const algorithms = {
     FCFS: "FCFS - First Come First Serve",
@@ -28,9 +32,6 @@ const algorithms = {
     PRI_P: "Priority (Preemptive)",
     RR: "Round Robin"
 }
-
-const selectedAlg = "PRI_P";
-const heading = document.getElementById("algorithm");
 
 let totalWaitingTime = 0;
 let totalTurnAroundTime = 0;
@@ -180,7 +181,7 @@ if (selectedAlg === "PRI_N") {
 
 if (selectedAlg === "SJF_P") {
     heading.innerHTML = algorithms.SJF_P;
-    // Calculate for Gantt chart and timeline by SJF non-preemptive algorithm
+    // Calculate for Gantt chart and timeline by SJF preemptive algorithm
     let cloneProcesses = [...processes];
     let currentProcesses = [];
     let index = 0;
@@ -256,7 +257,7 @@ if (selectedAlg === "SJF_P") {
 
 if (selectedAlg === "PRI_P") {
     heading.innerHTML = algorithms.PRI_P;
-        // Calculate for Gantt chart and timeline by SJF non-preemptive algorithm
+        // Calculate for Gantt chart and timeline by Priority preemptive algorithm
         let cloneProcesses = [...processes];
         let currentProcesses = [];
         let index = 0;
@@ -335,6 +336,77 @@ if (selectedAlg === "PRI_P") {
 
 if (selectedAlg === "RR") {
     heading.innerHTML = algorithms.RR;
+    const quantumTime = 2;
+    heading.innerHTML += ` (Time quantum = ${quantumTime})`;
+
+    // Calculate for Gantt chart and timeline by Round robin algorithm
+    let cloneProcesses = [...processes];
+    let currentProcesses = [];
+    let index = 0;
+
+    // Array for checking if the process has been appeared in the timeline
+    let checked = [];
+    for (let i = 0; i < processes.length; i++) {
+        checked.push({ name: processes[i].name, checked: false });
+    }
+
+    do {
+        // Filter the processes that have not completed yet
+        cloneProcesses = cloneProcesses.filter((p) => p.burstTime > 0);
+        // Get the current process
+        for (let i = 0; i < cloneProcesses.length; i++) {
+            const process = cloneProcesses[i];
+            if (process.arrivalTime <= currentTime) {
+                currentProcesses.push(process);
+                cloneProcesses.splice(i, 1);
+                i--;
+            }
+        }
+        //console.log(...processes);
+        if (currentProcesses.length == 0) {currentTime++; continue;}
+        // Sort the current processes by priority
+        // Assume that the larger the number, the higher the priority
+        //currentProcesses.sort((a, b) => b.priority - a.priority);
+        // Assume that the smaller the number, the higher the priority
+        currentProcesses.sort((a, b) => a.priority - b.priority);
+
+        const process = currentProcesses[0];
+        currentProcesses.splice(0, 1);
+
+        // Calculate start time and end time
+        // Start time = current time
+        let endTime = (currentTime + quantumTime > currentTime + process.burstTime) ? currentTime + process.burstTime : currentTime + quantumTime;
+
+        // Find the index of the process in the original array
+        index = processes.findIndex((p) => p.name === process.name);
+        console.log(...timeline);
+
+        timeline.push({ process: processes[index], startTime: currentTime, endTime: endTime });
+
+        cloneProcesses.push({ name: process.name, arrivalTime: process.arrivalTime, burstTime: process.burstTime - (endTime - currentTime), priority: process.priority });
+
+        currentTime = endTime;
+
+        // Calculate waiting time
+        processes[index].waitingTime = currentTime - processes[index].arrivalTime - processes[index].burstTime;
+
+        // Calculate turn around time
+        processes[index].turnAroundTime = currentTime - processes[index].arrivalTime;
+
+        // Calculate response time
+        if (checked[index].checked === false) {
+            processes[index].responseTime = currentTime - 1 - processes[index].arrivalTime;
+            checked[index].checked = true;
+        }
+    } while (cloneProcesses.length > 0);
+    currentTime--;
+
+    // Calculate the total waiting time
+    totalWaitingTime = processes.reduce((total, process) => total + process.waitingTime, 0);
+    // Calculate the total turn around time
+    totalTurnAroundTime = processes.reduce((total, process) => total + process.turnAroundTime, 0);
+    // Calculate the total response time
+    totalResponseTime = processes.reduce((total, process) => total + process.responseTime, 0);
 }
 
 // Print the processes
