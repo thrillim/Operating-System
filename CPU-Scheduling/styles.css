@@ -51,3 +51,19 @@ table, th, td {
     gap: 10px;
     margin-bottom: 10px;
 }
+
+#clear-processes {
+    margin-top: 10px;
+}
+
+#input-processes {
+    margin-bottom: 10px;
+}
+
+input[type="text"]{
+    width: 80px;
+}
+
+#added-processes {
+    margin-top: 10px;
+}

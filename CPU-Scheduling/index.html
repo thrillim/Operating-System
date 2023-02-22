@@ -40,10 +40,53 @@
         <div id="charts">
             <div id="gantt-chart"></div>
             <div id="timeline">
-            <div class="milestone">0</div>
+                <div class="milestone">0</div>
             </div>
         </div>
         
+        <!--Input processes from user-->
+        <div id="input-processes">
+            <h2>Input Processes</h2>
+            <form id="processes-form">
+                <label for="processes">Processes</label>
+                <input type="text" id="process" name="process" placeholder="P1,P2,P3" autofocus>
+                <label for="arrival-time">Arrival Time</label>
+                <input type="text" id="arrival-time" name="arrival-time" placeholder="0,1,2">
+                <label for="burst-time">Burst Time</label>
+                <input type="text" id="burst-time" name="burst-time" placeholder="3,5,1">
+                <label for="priority">Priority</label>
+                <input type="text" id="priority" name="priority" placeholder="1,2,3">
+                <input type="submit" value="Add">
+            </form>
+            <div id="added-processes">
+                <table id="added-processes-table">
+                    <tr>
+                        <th>Process</th>
+                        <th>Arrival Time</th>
+                        <th>Burst Time</th>
+                        <th>Priority</th>
+                    </tr>
+                </table>
+                <button id="clear-processes">Clear</button>
+            </div>
+        </div>
+        
+        <div id="select-algorithm">
+            <h2>Select algorithm</h2>
+            <form id="algorithm-form">
+                <select id="algorithm-select" name="algorithm-select">
+                    <option selected>--select---</option>
+                    <option value="FCFS">FCFS</option>
+                    <option value="SJF_P">Shortest Job First (Preemptive)</option>
+                    <option value="SJF_N">Shortest Job First (Non-Preemptive)</option>
+                    <option value="PRI_P">Priority (Preemptive)</option>
+                    <option value="PRI_N">Priority (Non-Preemptive)</option>
+                    <option value="RR">Round Robin</option>
+                </select>
+                <label for="time-quantum">Time Quantum</label>
+                <input type="number" id="time-quantum" name="time-quantum" value="1" min="1">
+            </form>
+        </div>
 
         <script src="script.js"></script>
     </body>
