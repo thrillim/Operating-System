@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Detection Algorithm</title>
+        <script>
+            const numOfProcesses = 5;
+            const numOfResources = 3;
+            const allocation = [
+                [0, 1, 0],
+                [2, 0, 0],
+                [3, 0, 3],
+                [2, 1, 1],
+                [0, 0, 2]
+            ];
+            const available = [0, 0, 0];
+            const request = [
+                [0, 0, 0],
+                [2, 0, 2],
+                [0, 0, 1],
+                [1, 0, 0],
+                [0, 0, 2]
+            ];
+
+            detectDeadlock(numOfProcesses, numOfResources, allocation, available, request);
+
+            
+            function detectDeadlock(numOfProcesses, numOfResources, allocation, available, request) {
+                // Step 1
+                let work = available.slice();
+                let finish = new Array(numOfProcesses);
+                for (let i = 0; i < numOfProcesses; i++) {
+                    if (allocation[i].every(x => x == 0)) {
+                        finish[i] = true;
+                    } else {
+                        finish[i] = false;
+                    }
+                }
+
+                // Step 2-3
+                let found = true;
+                while (found) {
+                    found = false;
+                    for (let i = 0; i < numOfProcesses; i++) {
+                        if (!finish[i] && request[i].every((x, j) => x <= work[j])) {
+                            finish[i] = true;
+                            for (let j = 0; j < numOfResources; j++) {
+                                work[j] += allocation[i][j];
+                            }
+                            found = true;
+                        }
+                    }
+                }
+
+                // Step 4
+                let deadlockProcesses = [];
+                for (let i = 0; i < numOfProcesses; i++) {
+                    if (!finish[i]) {
+                        deadlockProcesses.push(i);
+                    }
+                }
+
+                if (deadlockProcesses.length > 0) {
+                    document.write(`Deadlock detected. Processes ${deadlockProcesses.join(', ')} are deadlocked.`);
+                    return deadlockProcesses;
+                } else {
+                    document.write('No deadlock detected.');
+                    return null;
+                }
+            }
+
+        </script>
+    </head>
+    <body>
+    </body>
+</html>
