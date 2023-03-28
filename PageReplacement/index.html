@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html data-theme="night">
+
+<head>
+  <title>Page Replacement Algorithm</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css"
+    rel="stylesheet"
+    type="text/css"
+  />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+</head>
+
+<body>
+  <h1 class="text-2xl py-3 font-bold text-center">
+    Page Replacement Algorithms Visualization
+  </h1>
+  <div class="md:px-10">
+    <span>Reference string: </span>
+    <input
+      id="ref-string"
+      type="text"
+      placeholder="1, 2, 3, ..."
+      value="1, 2, 3"
+      class="input input-bordered input-sm w-full max-w-3xl"
+    />
+    <input
+      id="separator"
+      type="text"
+      placeholder="Separate by (eg. ', ')"
+      value=", "
+      class="input input-bordered input-sm w-sm max-w-sm"
+    />
+    <div class="grid grid-flow-col-dense py-2 gap-1">
+      <div>
+        <select
+          id="select-algorithm"
+          class="select select-primary w-full max-w-xs"
+        >
+          <option
+            disabled
+            selected
+            value="none"
+          >Select an algorithm</option>
+          <option value="FIFO">FIFO</option>
+          <option value="LRU">LRU</option>
+          <option value="MRU">MRU</option>
+          <option value="LFU">LFU</option>
+          <option value="MFU">MFU</option>
+          <option value="2ND">Second chance</option>
+          <option value="OPT">Optimal</option>
+        </select>
+      </div>
+      <div class="block">
+        <p>Frame(s):</p>
+        <input
+          id="num-of-frames"
+          type="range"
+          min="0"
+          max="10"
+          value="3"
+          class="range range-xs"
+          step="1"
+        />
+        <div class="w-full flex justify-between text-xs px-2">
+          <span>0</span>
+          <span>1</span>
+          <span>2</span>
+          <span>3</span>
+          <span>4</span>
+          <span>5</span>
+          <span>6</span>
+          <span>7</span>
+          <span>8</span>
+          <span>9</span>
+          <span>10</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    id="visual-ref-string"
+    class="flex flex-wrap justify-around py-2 font-bold"
+  ></div>
+  <div id="visual-page-frames"></div>
+  <div id="conclusion"></div>
+  <script src="script.js"></script>
+</body>
+
+</html>
