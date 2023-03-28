@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-theme="night">
+<html data-theme="lofi"> <!-- cooperate, lofi, cmyk -->
 
 <head>
   <title>Page Replacement Algorithm</title>
@@ -26,14 +26,14 @@
       id="ref-string"
       type="text"
       placeholder="1, 2, 3, ..."
-      value="1, 2, 3"
+      value="7,0,1,2,0,3,0,4,2,3,0,3,0,3,2,1,2,0,1,7,0,1"
       class="input input-bordered input-sm w-full max-w-3xl"
     />
     <input
       id="separator"
       type="text"
       placeholder="Separate by (eg. ', ')"
-      value=", "
+      value=","
       class="input input-bordered input-sm w-sm max-w-sm"
     />
     <div class="grid grid-flow-col-dense py-2 gap-1">
@@ -61,14 +61,14 @@
         <input
           id="num-of-frames"
           type="range"
-          min="0"
+          min="1"
           max="10"
           value="3"
           class="range range-xs"
           step="1"
         />
         <div class="w-full flex justify-between text-xs px-2">
-          <span>0</span>
+          <!-- <span>0</span> -->
           <span>1</span>
           <span>2</span>
           <span>3</span>
@@ -84,11 +84,13 @@
     </div>
   </div>
   <div
-    id="visual-ref-string"
-    class="flex flex-wrap justify-around py-2 font-bold"
+    id="visual-page-frames"
+    class="flex flex-wrap justify-around my-2"
   ></div>
-  <div id="visual-page-frames"></div>
-  <div id="conclusion"></div>
+  <div
+    id="conclusion"
+    class="px-10"
+  ></div>
   <script src="script.js"></script>
 </body>
 
