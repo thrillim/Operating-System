@@ -89,17 +89,13 @@ function visulize(refStringArray, frames, algorithm) {
         if (!isFull) { // Page Frame is not full
           prevPageFrame[prevPageFrame.findIndex((item) => item[0] == "-")] = [refStringArray[i], [1, i]]; // [frequency, first-in index]
         } else { // Page Frame is full
-          // Find the least-frequently used page frame (if there are more than one, choose the first-in one)
-          let leastFrequentlyUsedFrameIndex;
           // Find the least-frequently used page frames
           let leastFrequentlyUsedFrames = prevPageFrame.filter((item) => item[1][0] == Math.min(...prevPageFrame.map((item) => item[1][0])));
-          // If there is only one least-frequently used page frame, choose it
-          if (leastFrequentlyUsedFrames.length == 1) {
-            leastFrequentlyUsedFrameIndex = prevPageFrame.findIndex((item) => item[0] == leastFrequentlyUsedFrames[0][0]);
-          } else { // If there are more than one least-frequently used page frames, choose the first-in one
-            leastFrequentlyUsedFrameIndex = prevPageFrame.findIndex((item) => item[1][1] == Math.min(...leastFrequentlyUsedFrames.map((item) => item[1][1])));
-          }
-          prevPageFrame[leastFrequentlyUsedFrameIndex] = [refStringArray[i], [1, i]];
+          // Find the oldest page frame in the least-frequently used page frames
+          let victimFrame = leastFrequentlyUsedFrames.find((item) => item[1][1] == Math.min(...leastFrequentlyUsedFrames.map((item) => item[1][1])));
+          // Find the index of the victim page frame
+          let victimFrameIndex = prevPageFrame.findIndex((item) => item[0] == victimFrame[0]);
+          prevPageFrame[victimFrameIndex] = [refStringArray[i], [1, i]];
         }
       } else { // Page Hit, found
         prevPageFrame[indexOfRef][1][0]++;
@@ -115,17 +111,13 @@ function visulize(refStringArray, frames, algorithm) {
         if (!isFull) { // Page Frame is not full
           prevPageFrame[prevPageFrame.findIndex((item) => item[0] == "-")] = [refStringArray[i], [1, i]]; // [frequency, first-in index]
         } else { // Page Frame is full
-          // Find the most-frequently used page frame (if there are more than one, choose the first-in one)
-          let mostFrequentlyUsedFrameIndex;
           // Find the most-frequently used page frames
           let mostFrequentlyUsedFrames = prevPageFrame.filter((item) => item[1][0] == Math.max(...prevPageFrame.map((item) => item[1][0])));
-          // If there is only one most-frequently used page frame, choose it
-          if (mostFrequentlyUsedFrames.length == 1) {
-            mostFrequentlyUsedFrameIndex = prevPageFrame.findIndex((item) => item[0] == mostFrequentlyUsedFrames[0][0]);
-          } else { // If there are more than one most-frequently used page frames, choose the first-in one
-            mostFrequentlyUsedFrameIndex = prevPageFrame.findIndex((item) => item[1][1] == Math.min(...mostFrequentlyUsedFrames.map((item) => item[1][1])));
-          }
-          prevPageFrame[mostFrequentlyUsedFrameIndex] = [refStringArray[i], [1, i]];
+          // Find the oldest page frame in the most-frequently used page frames
+          let victimFrame = mostFrequentlyUsedFrames.find((item) => item[1][1] == Math.min(...mostFrequentlyUsedFrames.map((item) => item[1][1])));
+          // Find the index of the victim page frame
+          let victimFrameIndex = prevPageFrame.findIndex((item) => item[0] == victimFrame[0]);
+          prevPageFrame[victimFrameIndex] = [refStringArray[i], [1, i]];
         }
       } else { // Page Hit, found
         prevPageFrame[indexOfRef][1][0]++;
@@ -171,16 +163,14 @@ function visulize(refStringArray, frames, algorithm) {
           prevPageFrame[prevPageFrame.findIndex((item) => item[0] == "-")] = [refStringArray[i], [0, i]]; // distance with next string refference item, first-in index AND distance will be updated later
         } else { // Page Frame is full
           // Find index of the page frames with the longest distance with next string refference item
-          console.log(prevPageFrame);
+          // console.log(prevPageFrame);
           let longestDistanceFrames = prevPageFrame.filter((item) => item[1][0] == Math.max(...prevPageFrame.map((item) => item[1][0])));
-          console.log(longestDistanceFrames);
-          // If there is only one page frame with the longest distance with next string refference item, choose it
-          if (longestDistanceFrames.length == 1) {
-            prevPageFrame[prevPageFrame.findIndex((item) => item[0] == longestDistanceFrames[0][0])] = [refStringArray[i], [0, i]]; // distance will be updated later
-          } else { // If there are more than one page frames with the longest distance with next string refference item, choose the first-in one
-            indexOfRef = longestDistanceFrames.findIndex((item) => item[1][1] == Math.min(...longestDistanceFrames.map((item) => item[1][1])));
-            prevPageFrame[indexOfRef] = [refStringArray[i], [0, i]]; // distance will be updated later
-          }
+          // console.log(longestDistanceFrames);
+          let victimFrame = longestDistanceFrames.find((item) => item[1][1] == Math.min(...longestDistanceFrames.map((item) => item[1][1])));
+          // console.log(victimFrame);
+          // Find index of victim frame in prevPageFrame
+          let victimFrameIndex = prevPageFrame.findIndex((item) => item[0] == victimFrame[0]);
+          prevPageFrame[victimFrameIndex] = [refStringArray[i], [0, i]]; // distance will be updated later
         }
       } else { // Page Hit, found
         // isDrawn = true;
@@ -210,7 +200,7 @@ function visulize(refStringArray, frames, algorithm) {
     }
   }
   // Show conclusion
-  conclusion.innerHTML = `Page Faults: ${pageFaults}`;
+  conclusion.innerHTML = `<div>Total references: ${refStringArray.length}</div> <div>Page Faults: ${pageFaults}</div> <div>Fault Rate: ${Math.round(pageFaults / refStringArray.length * 100)}%</div>`;
   // Display frame info
   frameInfo.className = "border-solid border border-primary text-center max-w-fit m-auto px-2";
 }
