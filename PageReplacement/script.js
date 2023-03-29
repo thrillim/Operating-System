@@ -161,11 +161,43 @@ function visulize(refStringArray, frames, algorithm) {
       currentPageFrame = prevPageFrame
       frameSubInfo.innerHTML = "reference bit, first-in index";
     } else if (algorithm == 'OPT') {
+      // Change "&infin;" to "Infinity" to make it work
+      prevPageFrame = currentPageFrame.map((item) => item[1][0] == "&infin;" ? [item[0], [Infinity, item[1][1]]] : item);
+      let indexOfRef = prevPageFrame.findIndex((item) => item[0] == refStringArray[i]);
+      if (indexOfRef == -1) { // Page Fault, not found
+        pageFaults++;
+        isDrawn = true;
+        if (!isFull) { // Page Frame is not full
+          prevPageFrame[prevPageFrame.findIndex((item) => item[0] == "-")] = [refStringArray[i], [0, i]]; // distance with next string refference item, first-in index AND distance will be updated later
+        } else { // Page Frame is full
+          // Find index of the page frames with the longest distance with next string refference item
+          console.log(prevPageFrame);
+          let longestDistanceFrames = prevPageFrame.filter((item) => item[1][0] == Math.max(...prevPageFrame.map((item) => item[1][0])));
+          console.log(longestDistanceFrames);
+          // If there is only one page frame with the longest distance with next string refference item, choose it
+          if (longestDistanceFrames.length == 1) {
+            prevPageFrame[prevPageFrame.findIndex((item) => item[0] == longestDistanceFrames[0][0])] = [refStringArray[i], [0, i]]; // distance will be updated later
+          } else { // If there are more than one page frames with the longest distance with next string refference item, choose the first-in one
+            indexOfRef = longestDistanceFrames.findIndex((item) => item[1][1] == Math.min(...longestDistanceFrames.map((item) => item[1][1])));
+            prevPageFrame[indexOfRef] = [refStringArray[i], [0, i]]; // distance will be updated later
+          }
+        }
+      } else { // Page Hit, found
+        // isDrawn = true;
+      }
+      // Update distance with next string refference item
+      for (let j = 0; j < prevPageFrame.length; j++) {
+        if (prevPageFrame[j][0] != "-") {
+          prevPageFrame[j][1][0] = (distanceRef(i + 1, prevPageFrame[j][0]) == Infinity) ? "&infin;" : distanceRef(i + 1, prevPageFrame[j][0]);
+        }
+      }
+      currentPageFrame = prevPageFrame;
+      frameSubInfo.innerHTML = "distance with next string refference item, first-in index";
     }
     // Draw current page frame
     let pageFrame = "";
     for (let k = 0; k < frames; k++) {
-      console.log(currentPageFrame[k]);
+      // console.log(currentPageFrame[k]);
       let data = currentPageFrame[k][0];
       let subData = currentPageFrame[k][1];
       pageFrame += `<div class="border-solid border border-primary text-center">${data} <div class="text-xs text-info text-center">${subData}</div></div> `;
@@ -183,16 +215,29 @@ function visulize(refStringArray, frames, algorithm) {
   frameInfo.className = "border-solid border border-primary text-center max-w-fit m-auto px-2";
 }
 
+function distanceRef(reffItemIndex, thisFrameNumber) {
+  let distance = 0;
+  for (let i = reffItemIndex; i < refStringArray.length; i++) {
+    if (refStringArray[i] == thisFrameNumber) {
+      return distance;
+    }
+    distance++;
+  }
+  return Infinity;
+}
+
+// console.log(distanceRef(0, 0));
+
 algorithm.addEventListener('change', () => {
   refStringArray = refString.value.split(separator.value);
   frames = parseInt(numOfFrames.value);
-  console.log(refStringArray, frames);
+  // console.log(refStringArray, frames);
   visulize(refStringArray, frames, algorithm.value);
 });
 
 numOfFrames.addEventListener('change', () => {
   frames = parseInt(numOfFrames.value);
-  console.log(refStringArray, frames);
+  // console.log(refStringArray, frames);
   if (algorithm.value != 'none') {
     visulize(refStringArray, frames, algorithm.value);
   }
@@ -200,7 +245,7 @@ numOfFrames.addEventListener('change', () => {
 
 refString.addEventListener('change', () => {
   refStringArray = refString.value.split(separator.value);
-  console.log(refStringArray, frames);
+  // console.log(refStringArray, frames);
   if (algorithm.value != 'none') {
     visulize(refStringArray, frames, algorithm.value);
   }
@@ -208,7 +253,7 @@ refString.addEventListener('change', () => {
 
 separator.addEventListener('change', () => {
   refStringArray = refString.value.split(separator.value);
-  console.log(refStringArray, frames);
+  // console.log(refStringArray, frames);
   if (algorithm.value != 'none') {
     visulize(refStringArray, frames, algorithm.value);
   }
