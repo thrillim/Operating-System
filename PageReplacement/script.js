@@ -127,12 +127,12 @@ function visulize(refStringArray, frames, algorithm) {
     } else if (algorithm == '2ND') {
       prevPageFrame = currentPageFrame;
       let indexOfRef = prevPageFrame.findIndex((item) => item[0] == refStringArray[i]);
-      let refPointer = 0;
+      let refPointer = 1;
       if (indexOfRef == -1) { // Page Fault, not found
         pageFaults++;
         isDrawn = true;
         if (!isFull) { // Page Frame is not full
-          prevPageFrame[prevPageFrame.findIndex((item) => item[0] == "-")] = [refStringArray[i], [0, i]]; // refference bit, first-in index
+          prevPageFrame[prevPageFrame.findIndex((item) => item[0] == "-")] = [refStringArray[i], [1, i]]; // refference bit, first-in index
         } else { // Page Frame is full
           // Find the oldest page frame as the first refPointer
           refPointer = prevPageFrame.findIndex((item) => item[1][1] == Math.min(...prevPageFrame.map((item) => item[1][1])));
@@ -141,14 +141,10 @@ function visulize(refStringArray, frames, algorithm) {
             refPointer = (refPointer + 1) % frames;
           }
           // If refference bit is 0 then replace it
-          prevPageFrame[refPointer] = [refStringArray[i], [0, i]];
+          prevPageFrame[refPointer] = [refStringArray[i], [1, i]];
         }
       } else { // Page Hit, found
-        // If refference bit is 0 then change it to 1
-        if (prevPageFrame[indexOfRef][1][0] == 0) {
-          prevPageFrame[indexOfRef][1][0] = 1;
-        }
-        // If refference bit is 1 then do nothing
+        // Do nothing
       }
       currentPageFrame = prevPageFrame
       frameSubInfo.innerHTML = "reference bit, first-in index";
