@@ -12,7 +12,7 @@ This project implements five disk scheduling algorithms: FCFS, SSTF, SCAN, C-SCA
 4. Run the main.py file with Python 3: `python3 try.py`
 5. The program will then display the results for all five disk scheduling algorithms.
 
-Note: Now code is now work with given group of inputs (see line from 171 to 187). You can modify source code to get input from user (sample input promt from line 164 to 169)
+Note: Now code is working with given group of inputs (see line from 171 to 187). You can modify source code to get input from user (sample input promt from line 164 to 169)
 
 ## Algorithms ##
 ### FCFS (First-Come, First-Served) ###
