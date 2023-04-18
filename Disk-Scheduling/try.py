@@ -1,9 +1,5 @@
 import matplotlib.pyplot as plt
 
-# req_queue = list(map(int, input("Request queue: ").split(", ")))
-# print(req_queue)
-# head_pointer = int(input("Head pointer: "))
-
 
 # find the max request that smaller than head_pointer using binary search
 def find_max_smaller(req_queue, head_pointer):
@@ -41,7 +37,7 @@ def draw(points, name, maxDist):
     plt.text(points[len(points)-1], max_y-(len(points)-1)
              * unit + 0.5, points[len(points)-1])
     # show total movement
-    plt.title("Total movement: " + str(total_move))
+    plt.title("Total movements: " + str(total_move))
 
 
 def FCFS(queue, head_pointer):
@@ -165,6 +161,13 @@ def CLOOK(queue, head_pointer, toRight):
 
 
 def main():
+    # req_queue = list(map(int, input("Request queue: ").split(", ")))
+    # print(req_queue)
+    # head_pointer = int(input("Head pointer: "))
+    # prev_head_pointer = int(input("Previous position of pointer: "))
+    # max_track = int(input("Max track: "))
+    # min_track = int(input("Min track: "))
+
     # req_queue = [98, 183, 37, 122, 14, 124, 65, 67]
     # prev_head_pointer = 53
     # head_pointer = 53
